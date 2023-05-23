@@ -1,0 +1,28 @@
+// primary et secondary colors - Boostrap
+$nav-color: #006857;
+$primary-color: #000000;
+$secondary-color: #FFCB00;
+$tertiary-color: #ffffff;
+$background-color: #EDEDED;
+
+@import "~bootstrap/scss/bootstrap";
+
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: $background-color;
+    color: $primary-color;
+}
+
+nav {
+    background-color: $nav-color;
+}
+
+nav div.container-fluid a.navbar-brand {
+    color: $secondary-color;
+}
