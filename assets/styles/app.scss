@@ -23,6 +23,11 @@ nav {
     background-color: $nav-color;
 }
 
-nav div.container-fluid a.navbar-brand {
+nav div.container-fluid div.navbar-header img.img_icon {
+    width: 6.5%;
+}
+
+nav div.container-fluid div.navbar-header a.navbar-brand {
     color: $secondary-color;
+    margin-left: .5em;
 }
