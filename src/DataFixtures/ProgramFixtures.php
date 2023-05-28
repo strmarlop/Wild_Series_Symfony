@@ -18,7 +18,6 @@ class ProgramFixtures extends Fixture implements DependentFixtureInterface
         ['title' => 'Rick et Morty', 'synopsis' => 'Un brillant inventeur et son petit fils un peu à l\'Ouest partent à l\'aventure...', 'category' => 'Animation', 'country' => 'États-Unis', 'year' => '2013'],
         ['title' => 'Lastman', 'synopsis' => 'Richard Aldana, un jeune boxeur, se retrouve avec la gamine de son meilleur ami sur les bras. Mais la petite Siri est traquée par une secte de fanatiques qui croient à l’existence de la Vallée des Rois, un monde de légendes dont elle serait la clef.', 'category' => 'Animation', 'country' => 'France', 'year' => '2016'],
         ['title' => 'L\'Attaque des Titans', 'synopsis' => 'Dans un monde ravagé par des titans mangeurs d’homme depuis plus d’un siècle, les rares survivants de l’Humanité n’ont d’autre choix pour survivre que de se barricader dans une cité-forteresse. Le jeune Eren, témoin de la mort de sa mère dévorée par un titan, n’a qu’un rêve : entrer dans le corps d’élite chargé de découvrir l’origine des Titans et les annihiler jusqu’au dernier…', 'category' => 'Animation', 'country' => 'Japon', 'year' => '2013'],
-
     ];
 
     public function load(ObjectManager $manager)
