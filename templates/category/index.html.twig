@@ -8,6 +8,7 @@
 	{% for category in categories %}
 		<div>
 			<h2>{{ loop.index }}/<a href="{{ path("category_show", { categoryName: category.name }) }}">{{ category.name }}</a>
+				{#categoryName es el nombre de la ruta#}
 			</h2>
 			{# <a href="{{ path('category_index') }}">Retourner à la liste de categories</a> #}
 		</div>
