@@ -37,7 +37,7 @@ class ProgramController extends AbstractController
         return $this->render('program/show.html.twig', ['program' => $program,]);
     }
 
-    #[Route('/{programId}/seasons/{seasonId}', name: 'season_show')] //no repetir program_season_show, el program_ es genérico
+    #[Route('/{program}/seasons/{season}', name: 'season_show')] //no repetir program_season_show, el program_ es genérico
     public function showSeason(Program $program, Season $season): Response //param converter
     {
         if (!$season) {
@@ -49,7 +49,7 @@ class ProgramController extends AbstractController
         return $this->render('program/season_show.html.twig', ['program' => $program, 'season' => $season]);
     }
 
-    #[Route('/program/{programId}/season/{seasonId}/episode/{episodeId}', name: 'episode_show')]
+    #[Route('/{program}/season/{season}/episode/{episode}', name: 'episode_show')]
     public function showEpisode(Program $program, Season $season, Episode $episode): Response
     {
         if (!$episode) {
