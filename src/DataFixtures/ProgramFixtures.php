@@ -8,6 +8,7 @@ use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 use Symfony\Component\Validator\Constraints\Country;
 
+
 class ProgramFixtures extends Fixture implements DependentFixtureInterface
 {
     public const PROGRAMS = [
@@ -22,7 +23,7 @@ class ProgramFixtures extends Fixture implements DependentFixtureInterface
 
     public function load(ObjectManager $manager)
     {
-        foreach (self::PROGRAMS as $programList) {
+        foreach (self::PROGRAMS as $key => $programList) {
             $program = new Program();
             $program->setTitle($programList['title']);
             $program->setSynopsis($programList['synopsis']);
@@ -31,7 +32,8 @@ class ProgramFixtures extends Fixture implements DependentFixtureInterface
             $program->setYear($programList['year']);
 
             $manager->persist($program);
-            $this->addReference('program_' . $programList['title'], $program);
+            // $this->addReference('program_' . $programList['title'], $program);
+            $this->addReference('program_' . $key, $program);
         }
         $manager->flush();
     }
