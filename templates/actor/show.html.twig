@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+	{{ actor.name }}
+{% endblock %}
+
+{% block body %}
+	<div class="media">
+		<img class="align-self-start mr-3" src="{{ actor.name }}" alt="{{ actor.name }}">
+		<div class="media-body">
+			<h1 class="mt-0">{{ actor.name }}</h1>
+
+			<h3>{{ actor.name }}
+				a travaillé dans les films suivants:</h3>
+			<ul>
+				{% for program in actor.programs %}
+					<li>
+						<a href="{{ path('program_show', { program: program.id }) }}">
+							<p>{{ program.title }}</p>
+						</a>
+
+					</li>
+				{% endfor %}
+			</ul>
+		</div>
+	</div>
+	<a href="{{ path('program_index') }}">Retour à la liste des séries</a>
+	<br>
+	<a href="{{ path('category_index') }}">Retour à la liste de categories</a>
+{% endblock %}
