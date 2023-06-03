@@ -12,18 +12,24 @@ use Symfony\Component\Routing\Annotation\Route;
 use App\Repository\ProgramRepository;
 use App\Repository\SeasonRepository;
 use Symfony\Component\HttpFoundation\Request;
-
-
-
-
+use Symfony\Component\HttpFoundation\RequestStack;
+// use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 #[Route('/program', name: 'program_')]
 class ProgramController extends AbstractController
 {
     #[Route('/', name: 'index')]
-    public function index(ProgramRepository $programRepository): Response
+    public function index(RequestStack $requestStack, ProgramRepository $programRepository): Response
     {
         $programs = $programRepository->findAll();
+
+        //session
+        $session = $requestStack->getSession();
+        if (!$session->has('total')) {  //check if key total exists
+            $session->set('total', 0); // if total doesn’t exist in session, it is initialized.
+        }
+        $total = $session->get('total'); // get actual value in session with ‘total' key.
+        //pas besoin d'envoyer $total parce que Twig a accès à Session
 
         return $this->render('program/index.html.twig', ['programs' => $programs]);
     }
@@ -41,6 +47,10 @@ class ProgramController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             // Deal with the submitted data
             $programRepository->save($program, true);
+
+            // Once the form is submitted, valid and the data inserted in database, you can define the success flash message
+            //Y antes de ser redirigido al index
+            $this->addFlash('success', 'The new program has been created! :)'); //message in base.html.twig, para que sea global
 
             // Redirect to categories list
             return $this->redirectToRoute('program_index');

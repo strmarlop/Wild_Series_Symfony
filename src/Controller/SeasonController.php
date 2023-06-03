@@ -7,6 +7,7 @@ use App\Form\SeasonType;
 use App\Repository\SeasonRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -14,8 +15,15 @@ use Symfony\Component\Routing\Annotation\Route;
 class SeasonController extends AbstractController
 {
     #[Route('/', name: 'app_season_index', methods: ['GET'])]
-    public function index(SeasonRepository $seasonRepository): Response
+    public function index(RequestStack $requestStack, SeasonRepository $seasonRepository): Response
     {
+        // $session = $requestStack->getSession();
+        // if (!$session->has('total')) {  //check if key total exists
+        //     $session->set('total', 0); // if total doesn’t exist in session, it is initialized.
+        // }
+        // $total = $session->get('total');
+
+
         return $this->render('season/index.html.twig', [
             'seasons' => $seasonRepository->findAll(),
         ]);
@@ -30,6 +38,8 @@ class SeasonController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $seasonRepository->save($season, true);
+
+            $this->addFlash('success', 'The new season has been created! :)'); //message in base.html.twig, para que sea global
 
             return $this->redirectToRoute('app_season_index', [], Response::HTTP_SEE_OTHER);
         }
@@ -57,6 +67,8 @@ class SeasonController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $seasonRepository->save($season, true);
 
+            $this->addFlash('success', 'The season has been updated! :)');
+
             return $this->redirectToRoute('app_season_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -72,6 +84,8 @@ class SeasonController extends AbstractController
         if ($this->isCsrfTokenValid('delete'.$season->getId(), $request->request->get('_token'))) {
             $seasonRepository->remove($season, true);
         }
+
+        $this->addFlash('danger', 'Oh! One season has been deleted! :O');
 
         return $this->redirectToRoute('app_season_index', [], Response::HTTP_SEE_OTHER);
     }
