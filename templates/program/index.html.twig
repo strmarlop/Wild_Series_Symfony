@@ -4,7 +4,10 @@
 {% endblock %}
 
 {% block body %}
-	<h1>Toutes les séries de la table program :
+	{# {{ app.session.get('total') }}   total est la valeur de la clé $total du controller, donc on montre les données de la session #}
+
+	<h1>
+		Toutes les séries de la table program :
 	</h1>
 	{% for program in programs %}
 		<div>
@@ -12,10 +15,14 @@
 				/
 				{{ program.title }}
 				- Catégorie :
-				{{ program.category.name }}</h2>
-			<p>{{ program.synopsis }}</p>
+				{{ program.category.name }}
+			</h2>
+			<p>
+				{{ program.synopsis }}
+			</p>
 			{# Lien vers la fiche de la série : #}
-			<a href="{{ path("program_show", { id: program.id }) }}">Voir la fiche</a>
+			<a href="{{ path("program_show", { id: program.id }) }}">
+				Voir la fiche</a>
 			{#id es como está escrito en el parametro de show en ProgramController#}
 		</div>
 	{% else %}

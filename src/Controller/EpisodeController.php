@@ -7,6 +7,7 @@ use App\Form\EpisodeType;
 use App\Repository\EpisodeRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -14,8 +15,15 @@ use Symfony\Component\Routing\Annotation\Route;
 class EpisodeController extends AbstractController
 {
     #[Route('/', name: 'app_episode_index', methods: ['GET'])]
-    public function index(EpisodeRepository $episodeRepository): Response
+    public function index(RequestStack $requestStack ,EpisodeRepository $episodeRepository): Response
     {
+        // $session = $requestStack->getSession();
+        // if (!$session->has('total')) {  //check if key total exists
+        //     $session->set('total', 0); // if total doesn’t exist in session, it is initialized.
+        // }
+        // $total = $session->get('total');
+
+
         return $this->render('episode/index.html.twig', [
             'episodes' => $episodeRepository->findAll(),
         ]);
@@ -31,10 +39,12 @@ class EpisodeController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $episodeRepository->save($episode, true);
 
+            $this->addFlash('success', 'The new episode has been created! :)'); //message in base.html.twig, para que sea global
+
             return $this->redirectToRoute('app_episode_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('episode/new.html.twig', [
+        return $this->render('episode/new.html.twig', [
             'episode' => $episode,
             'form' => $form,
         ]);
@@ -57,10 +67,12 @@ class EpisodeController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $episodeRepository->save($episode, true);
 
+            $this->addFlash('success', 'The episode has been updated! :)');
+
             return $this->redirectToRoute('app_episode_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('episode/edit.html.twig', [
+        return $this->render('episode/edit.html.twig', [
             'episode' => $episode,
             'form' => $form,
         ]);
@@ -72,6 +84,8 @@ class EpisodeController extends AbstractController
         if ($this->isCsrfTokenValid('delete'.$episode->getId(), $request->request->get('_token'))) {
             $episodeRepository->remove($episode, true);
         }
+
+        $this->addFlash('danger', 'Oh! One episode has been deleted! :O');
 
         return $this->redirectToRoute('app_episode_index', [], Response::HTTP_SEE_OTHER);
     }
