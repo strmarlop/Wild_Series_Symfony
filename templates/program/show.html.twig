@@ -16,8 +16,8 @@
 				{% for season in program.seasons %}
 					<li>
 						{#modif a faire avec param converter#}
-						{# <a href="{{ path("program_season_show", { programId: program.id , seasonId: season.id }) }}">Saison #}
-							<a href="{{ path("program_season_show", { program: program.id , season: season.id }) }}"> Saison
+						<a href="{{ path("program_season_show", { program: program.id , season: season.id }) }}">
+							Saison
 							{{ season.number }}</a>
 						{# Aquí sí que pongo la route en entier #}
 					</li>
@@ -30,13 +30,14 @@
 	<ul>
 		{% for actor in program.actors %}
 			<li>
-				<a href="{{ path("actor_show", { actor: actor.id }) }}">{{ actor.name }}</li>
-			{% else %}
-				<li>Aucun acteur pour cette série</li>
-			{% endfor %}
-		</ul>
+				<a href="{{ path("actor_show", { id: actor.id }) }}">{{ actor.name }}</a>
+			</li>
+		{% else %}
+			<li>Aucun acteur pour cette série</li>
+		{% endfor %}
+	</ul>
 
-		<a href="{{ path('program_index') }}">Retour à la liste des séries</a>
-		<br>
-		<a href="{{ path('category_index') }}">Retour à la liste de categories</a>
-	{% endblock %}
+	<a href="{{ path('program_index') }}">Retour à la liste des séries</a>
+	<br>
+	<a href="{{ path('category_index') }}">Retour à la liste de categories</a>
+{% endblock %}

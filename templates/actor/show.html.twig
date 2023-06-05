@@ -10,15 +10,16 @@
 		<div class="media-body">
 			<h1 class="mt-0">{{ actor.name }}</h1>
 
-			<h3>{{ actor.name }}
-				a travaillé dans les films suivants:</h3>
+			<h3>Liste de séries asscociées à
+				{{ actor.name }}</h3>
+
+
 			<ul>
 				{% for program in actor.programs %}
 					<li>
-						<a href="{{ path('program_show', { program: program.id }) }}">
+						<a href="{{ path("program_show", { id: program.id }) }}">
 							<p>{{ program.title }}</p>
 						</a>
-
 					</li>
 				{% endfor %}
 			</ul>
