@@ -7,7 +7,8 @@ use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 use Symfony\Component\Validator\Constraints\Country;
-
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Component\String\Slugger\SluggerInterface;
 
 class ProgramFixtures extends Fixture implements DependentFixtureInterface
 {
@@ -21,6 +22,13 @@ class ProgramFixtures extends Fixture implements DependentFixtureInterface
         ['title' => 'L\'Attaque des Titans', 'synopsis' => 'Dans un monde ravagé par des titans mangeurs d’homme depuis plus d’un siècle, les rares survivants de l’Humanité n’ont d’autre choix pour survivre que de se barricader dans une cité-forteresse. Le jeune Eren, témoin de la mort de sa mère dévorée par un titan, n’a qu’un rêve : entrer dans le corps d’élite chargé de découvrir l’origine des Titans et les annihiler jusqu’au dernier…', 'category' => 'Animation', 'country' => 'Japon', 'year' => '2013'],
     ];
 
+    public SluggerInterface $slugger;
+
+    public function __construct(SluggerInterface $slugger)
+    {
+        $this->slugger = $slugger;
+    }
+
     public function load(ObjectManager $manager)
     {
         foreach (self::PROGRAMS as $key => $programList) {
@@ -30,6 +38,7 @@ class ProgramFixtures extends Fixture implements DependentFixtureInterface
             $program->setCategory($this->getReference('category_' . $programList['category']));
             $program->setCountry($programList['country']);
             $program->setYear($programList['year']);
+            $program->setSlug($this->slugger->slug($programList['title'])); //je l'ai dans construct
 
             $manager->persist($program);
             // $this->addReference('program_' . $programList['title'], $program);

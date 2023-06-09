@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Program;
 use App\Entity\Season;
 use App\Entity\Episode;
+use App\Service\ProgramDuration;
 use App\Entity\Actor;
 use App\Form\ProgramType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -14,6 +15,7 @@ use App\Repository\ProgramRepository;
 use App\Repository\SeasonRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\String\Slugger\SluggerInterface;
 // use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 #[Route('/program', name: 'program_')]
@@ -36,16 +38,21 @@ class ProgramController extends AbstractController
     }
 
     #[Route('/new', name: 'new')]
-    public function new(Request $request, ProgramRepository $programRepository): Response
+    public function new(Request $request, ProgramRepository $programRepository, SluggerInterface $slugger): Response
     {
         // Create a new Program Object - classe de données
         $program = new Program();
+
         // Create the associated Form  - classe de formulaire
         $form = $this->createForm(ProgramType::class, $program);
         // Get data from HTTP request
         $form->handleRequest($request);
         // Was the form submitted ?
         if ($form->isSubmitted() && $form->isValid()) {
+
+            $slug = $slugger->slug($program->getTitle()); //en parametre la chaîne de caractère à sluggifier
+            $program->setSlug($slug);
+
             // Deal with the submitted data
             $programRepository->save($program, true);
 
@@ -62,16 +69,20 @@ class ProgramController extends AbstractController
     }
 
 
-    #[Route('/show/{id<^[0-9]+$>}', name: 'show')]
-    public function show(Program $program): Response //param converter
+    // #[Route('/show/{id<^[0-9]+$>}', name: 'show')]
+    // public function show(Program $program, ProgramDuration $programDuration): Response //param converter
+
+    #[Route('/show/{slug}', name: 'show')] //SluggerInterface $slugger no hace falta porque ya lo tienes dentro de programa
+    public function show(Program $program, ProgramDuration $programDuration): Response //param converter
     {
+
         if (!$program) {
             throw $this->createNotFoundException(
                 'No program with id : ' . $program->getId() . ' found in program\'s table.' //aqui era la id
             );
         }
 
-        return $this->render('program/show.html.twig', ['program' => $program,]);
+        return $this->render('program/show.html.twig', ['program' => $program, 'programDuration' => $programDuration->calculate($program)]);
     }
 
     #[Route('/{program}/seasons/{season}', name: 'season_show')] //no repetir program_season_show, el program_ es genérico
@@ -86,7 +97,7 @@ class ProgramController extends AbstractController
         return $this->render('program/season_show.html.twig', ['program' => $program, 'season' => $season]);
     }
 
-    #[Route('/{program}/season/{season}/episode/{episode}', name: 'episode_show')]
+    #[Route('/{slug1}/season/{season}/episode/{slug3}', name: 'episode_show')]
     public function showEpisode(Program $program, Season $season, Episode $episode): Response
     {
         if (!$episode) {
