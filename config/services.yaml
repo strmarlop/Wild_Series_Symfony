@@ -5,6 +5,10 @@
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
     mailer_from: '%env(resolve:MAILER_FROM_ADDRESS)%'
+    upload_directory: '%kernel.project_dir%/public/uploads/images/posters/'
+# ```alert-warning
+#     Attention, le répertoire va contenir des images des utilisateurs. Celles-ci ne doivent **pas** être versionnées (au risque de se retrouver publiquement sur GitHub). Pense à mettre à jour ton .gitignore en conséquences.
+
 
 services:
     # default configuration for services in *this* file
@@ -23,3 +27,5 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+
+ upload_directory:

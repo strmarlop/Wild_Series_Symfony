@@ -7,6 +7,10 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\HttpFoundation\File\File;
+    //Ici on importe le package Vich, que l’on utilisera sous l’alias “Vich”
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
+
 // use Webmozart\Assert\Assert;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -15,6 +19,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 
 #[ORM\Entity(repositoryClass: ProgramRepository::class)]
+#[Vich\Uploadable] 
 #[UniqueEntity(['fields' => 'title', 'message' => 'Ce titre existe déjà!'])]
 class Program
 {
@@ -41,8 +46,12 @@ class Program
     )]
     private ?string $synopsis = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $poster = null;
+    #[ORM\Column(type: 'string', length: 255)]
+     private string $poster;
+     
+     #[Vich\UploadableField(mapping: 'poster_file', fileNameProperty: 'poster')]
+     private ?File $posterFile = null;
+
 
     #[ORM\ManyToOne(inversedBy: 'programs')]
     #[ORM\JoinColumn(nullable: false)]
@@ -213,5 +222,16 @@ class Program
         $this->slug = $slug;
 
         return $this;
+    }
+
+    public function setPosterFile(File $image = null): Program
+    {
+        $this->posterFile = $image;
+        return $this;
+    }
+
+    public function getPosterFile(): ?File
+    {
+        return $this->posterFile;
     }
 }
