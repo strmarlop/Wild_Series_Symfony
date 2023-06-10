@@ -1,0 +1,17 @@
+{% extends 'layoutEmail.html.twig' %}
+
+{% block title %}
+	<h1>New episode
+		{{ episode.title }}
+		created</h1>
+{% endblock %}
+
+{% block body %}
+	<p>Hello, the new episode
+		{{ episode.title }}
+		has been created on Wild Series</p>
+	{#from the program{{ program.title }}#}
+	<p>Synopsis :
+		{{ episode.synopsis }}</p>
+	{# <a href="{{ path('program_season_show', { slug_program: program.slug, season: season.id }) }}">You can see all the episodes here!</a> #}
+{% endblock %}

@@ -12,7 +12,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\String\Slugger\SluggerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
-
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
 
 #[Route('/episode')]
 class EpisodeController extends AbstractController
@@ -33,7 +34,7 @@ class EpisodeController extends AbstractController
     }
 
     #[Route('/new', name: 'app_episode_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EpisodeRepository $episodeRepository, SluggerInterface $slugger): Response
+    public function new(Request $request, MailerInterface $mailer, EpisodeRepository $episodeRepository, SluggerInterface $slugger): Response
     {
         $episode = new Episode();
 
@@ -47,6 +48,17 @@ class EpisodeController extends AbstractController
             // apres crée leslug, en EpisodeFixture hace add con slug y el titulo dentro
 
             $episodeRepository->save($episode, true);
+
+
+            $email = (new Email())
+                    ->from($this->getParameter('mailer_from'))
+                    ->to('your_email@example.com')
+                    ->subject('Un nouveau episode vient d\'être publié !')
+                    ->html($this->renderView('Episode/newEpisodeEmail.html.twig', ['episode' => $episode]));
+                    
+            $mailer->send($email);
+
+
 
             $this->addFlash('success', 'The new episode has been created! :)'); //message in base.html.twig, para que sea global
 
