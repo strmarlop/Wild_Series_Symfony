@@ -10,6 +10,8 @@ use App\Entity\Actor;
 use App\Form\ProgramType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Repository\ProgramRepository;
 use App\Repository\SeasonRepository;
@@ -43,7 +45,7 @@ class ProgramController extends AbstractController
     }
 
     #[Route('/new', name: 'new')]
-    public function new(Request $request, ProgramRepository $programRepository, SluggerInterface $slugger): Response
+    public function new(Request $request, MailerInterface $mailer, ProgramRepository $programRepository, SluggerInterface $slugger): Response
     {
         // Create a new Program Object - classe de données
         $program = new Program();
@@ -60,6 +62,15 @@ class ProgramController extends AbstractController
 
             // Deal with the submitted data
             $programRepository->save($program, true);
+
+            $email = (new Email())
+                    ->from($this->getParameter('mailer_from'))
+                    ->to('your_email@example.com')
+                    ->subject('Une nouvelle série vient d\'être publiée !')
+                    ->html($this->renderView('Program/newProgramEmail.html.twig', ['program' => $program]));
+                    
+            $mailer->send($email);
+
 
             // Once the form is submitted, valid and the data inserted in database, you can define the success flash message
             //Y antes de ser redirigido al index

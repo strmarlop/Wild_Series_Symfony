@@ -21,7 +21,7 @@
 				{{ program.synopsis }}
 			</p>
 			{# Lien vers la fiche de la série : #}
-			<a href="{{ path("program_show", { slug: program.slug }) }}">
+			<a href="{{ path("program_show", { slug_program: program.slug }) }}">
 				Voir la fiche</a>
 			{#id es como está escrito en el parametro de show en ProgramController#}
 		</div>
