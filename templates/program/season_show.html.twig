@@ -7,13 +7,16 @@
 {% endblock %}
 
 {% block body %}
-	<div class="media">
-		<img class="align-self-start mr-3" src="{{program.poster}}" alt="{{ program.title }} poster">
+	<div
+		class="media">
+		{# <img class="align-self-start mr-3" src="{{program.poster}}" alt="{{ program.title }} poster"> #}
 		<div class="media-body">
 			<h1 class="mt-0">Saison
 				{{ season.number }}
 				de
 				{{ program.title }}</h1>
+			<img src="{{ vich_uploader_asset(program) }}" alt="{{ program.title }}">
+
 			<p>{{ season.description }}</p>
 			<p>Liste d'épisodes</p>
 			{# Affichage de la liste de saison par rapport à la série #}

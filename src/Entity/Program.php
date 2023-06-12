@@ -3,19 +3,16 @@
 namespace App\Entity;
 
 use App\Repository\ProgramRepository;
+use DateTime;
+use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\File;
-    //Ici on importe le package Vich, que l’on utilisera sous l’alias “Vich”
-use Vich\UploaderBundle\Mapping\Annotation as Vich;
-
-// use Webmozart\Assert\Assert;
+use Vich\UploaderBundle\Mapping\Annotation as Vich; //Ici on importe le package Vich, que l’on utilisera sous l’alias “Vich”
 use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
-// use Symfony\Component\Validator\Mapping\ClassMetadata;
- 
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity; 
 
 
 #[ORM\Entity(repositoryClass: ProgramRepository::class)]
@@ -28,6 +25,7 @@ class Program
     #[ORM\Column]
     private ?int $id = null;
 
+
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank (message: 'Cette série a besoin d\'un title!')]
     #[Assert\Length(
@@ -36,6 +34,7 @@ class Program
         maxMessage: 'Ce titre {{ value }} ne peut pas dépasser {{ limit }} caractères'
     )]
     private ?string $title = null;
+
 
     #[ORM\Column(type: Types::TEXT)]
     #[Assert\NotBlank(message: 'Il faudra rajouter une petite synopsis')]
@@ -46,12 +45,18 @@ class Program
     )]
     private ?string $synopsis = null;
 
-    #[ORM\Column(type: 'string', length: 255)]
-     private string $poster;
-     
-     #[Vich\UploadableField(mapping: 'poster_file', fileNameProperty: 'poster')]
-     private ?File $posterFile = null;
+    #[ORM\Column(type: 'string', length: 255, nullable: true)] 
+    private ?string $poster = null;
 
+    #[Vich\UploadableField(mapping: 'poster_file', fileNameProperty: 'poster')]
+    #[Assert\File(
+        maxSize:'1M',
+        mimeTypes:['image/jpeg', 'image/png', 'image/webp'],
+    )]
+    private ?File $posterFile = null;
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?DateTimeInterface $updatedAt = null;
 
     #[ORM\ManyToOne(inversedBy: 'programs')]
     #[ORM\JoinColumn(nullable: false)]
@@ -227,6 +232,10 @@ class Program
     public function setPosterFile(File $image = null): Program
     {
         $this->posterFile = $image;
+        if ($image) {
+            $this->updatedAt = new DateTime('now');
+        }
+
         return $this;
     }
 
@@ -234,4 +243,17 @@ class Program
     {
         return $this->posterFile;
     }
+
+    public function setUpdatedAt(?DateTimeInterface $updatedAt): self
+    {
+        $this->updatedAt = $updatedAt;
+        
+        return $this;
+    }
+
+    public function getUpdatedAt(): ?DateTimeInterface
+    {
+        return $this->updatedAt;
+    }
+
 }
