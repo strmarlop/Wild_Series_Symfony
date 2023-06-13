@@ -6,6 +6,7 @@ use App\Repository\EpisodeRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
+
 #[ORM\Entity(repositoryClass: EpisodeRepository::class)]
 class Episode
 {
@@ -32,6 +33,7 @@ class Episode
 
     #[ORM\Column(length: 255)]
     private ?string $slug = null;
+
 
     public function getId(): ?int
     {

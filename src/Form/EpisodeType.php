@@ -8,6 +8,7 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Vich\UploaderBundle\Form\Type\VichFileType;
 
 class EpisodeType extends AbstractType
 {
@@ -18,7 +19,7 @@ class EpisodeType extends AbstractType
             ->add('number')
             ->add('synopsis')
             ->add('season', EntityType::class, ['class' => Season::class, 'choice_label' => 'number'])
-            ->add('duration')
+            ->add('duration') 
         ;
     }
 
