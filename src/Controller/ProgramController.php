@@ -78,7 +78,8 @@ class ProgramController extends AbstractController
     // public function show(Program $program, ProgramDuration $programDuration): Response //param converter
 
     #[Route('/show/{slug_program}', name: 'show')] //SluggerInterface $slugger no hace falta porque ya lo tienes dentro de programa
-    #[ParamConverter('program', options: ['mapping' => ['slug_program' => 'slug']])] // guardado en favoritos en navegador chrome
+    // #[ParamConverter('program',
+    #[Entity('program', options: ['mapping' => ['slug_program' => 'slug']])] // guardado en favoritos en navegador chrome
     public function show(Program $program, ProgramDuration $programDuration): Response //param converter
     {
 
@@ -92,7 +93,7 @@ class ProgramController extends AbstractController
     }
 
     #[Route('/{slug_program}/seasons/{season}', name: 'season_show')] //no repetir program_season_show, el program_ es genérico
-    #[ParamConverter('program', options: ['mapping' => ['slug_program' => 'slug']])] // guardado en favoritos en navegador chrome
+    #[Entity('program', options: ['mapping' => ['slug_program' => 'slug']])] // guardado en favoritos en navegador chrome
     public function showSeason(Program $program, Season $season): Response //param converter
     {
         if (!$season) {
@@ -105,8 +106,8 @@ class ProgramController extends AbstractController
     }
 
     #[Route('/{slug_program}/season/{season}/episode/{slug_episode}', name: 'episode_show')]
-    #[ParamConverter('program', options: ['mapping' => ['slug_program' => 'slug']])] // guardado en favoritos en navegador chrome
-    #[ParamConverter('episode', options: ['mapping' => ['slug_episode' => 'slug']])] // guardado en favoritos en navegador chrome
+    #[Entity('program', options: ['mapping' => ['slug_program' => 'slug']])] // guardado en favoritos en navegador chrome
+    #[Entity('episode', options: ['mapping' => ['slug_episode' => 'slug']])] // guardado en favoritos en navegador chrome
 
     public function showEpisode(Program $program, Season $season, Episode $episode): Response
     {
