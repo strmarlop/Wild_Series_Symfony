@@ -55,8 +55,8 @@ when@test:
                 memory_cost: 10 # Lowest possible value for argon
         security:
             # ...
-            role_hierarchy:
-                ROLE_CONTRIBUTOR: ROLE_USER
-                ROLE_ADMIN: ROLE_CONTRIBUTOR
+            # role_hierarchy:
+            #     ROLE_CONTRIBUTOR: ROLE_USER
+            #     ROLE_ADMIN: ROLE_CONTRIBUTOR
             # ...
 
