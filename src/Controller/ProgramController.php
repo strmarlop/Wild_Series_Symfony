@@ -7,7 +7,10 @@ use App\Entity\Season;
 use App\Entity\Episode;
 use App\Service\ProgramDuration;
 use App\Entity\Actor;
+use App\Entity\Comment;
+use App\Form\CommentType;
 use App\Form\ProgramType;
+use App\Repository\CommentRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mailer\MailerInterface;
@@ -89,8 +92,8 @@ class ProgramController extends AbstractController
     // public function show(Program $program, ProgramDuration $programDuration): Response //param converter
 
     #[Route('/show/{slug_program}', name: 'show')] //SluggerInterface $slugger no hace falta porque ya lo tienes dentro de programa
-    // #[ParamConverter('program',
-    #[Entity('program', options: ['mapping' => ['slug_program' => 'slug']])] // guardado en favoritos en navegador chrome
+    // #[Entity('program',
+    #[ParamConverter('program', options: ['mapping' => ['slug_program' => 'slug']])] // guardado en favoritos en navegador chrome
     public function show(Program $program, ProgramDuration $programDuration): Response //param converter
     {
 
@@ -104,7 +107,7 @@ class ProgramController extends AbstractController
     }
 
     #[Route('/{slug_program}/seasons/{season}', name: 'season_show')] //no repetir program_season_show, el program_ es genérico
-    #[Entity('program', options: ['mapping' => ['slug_program' => 'slug']])] // guardado en favoritos en navegador chrome
+    #[ParamConverter('program', options: ['mapping' => ['slug_program' => 'slug']])] // guardado en favoritos en navegador chrome
     public function showSeason(Program $program, Season $season): Response //param converter
     {
         if (!$season) {
@@ -117,10 +120,9 @@ class ProgramController extends AbstractController
     }
 
     #[Route('/{slug_program}/season/{season}/episode/{slug_episode}', name: 'episode_show')]
-    #[Entity('program', options: ['mapping' => ['slug_program' => 'slug']])] // guardado en favoritos en navegador chrome
-    #[Entity('episode', options: ['mapping' => ['slug_episode' => 'slug']])] // guardado en favoritos en navegador chrome
-
-    public function showEpisode(Program $program, Season $season, Episode $episode): Response
+    #[ParamConverter('program', options: ['mapping' => ['slug_program' => 'slug']])] // guardado en favoritos en navegador chrome
+    #[ParamConverter('episode', options: ['mapping' => ['slug_episode' => 'slug']])] // guardado en favoritos en navegador chrome
+    public function showEpisode(CommentRepository $commentRepository, Request $request, Program $program, Season $season, Episode $episode): Response
     {
         if (!$episode) {
             throw $this->createNotFoundException(
@@ -128,6 +130,24 @@ class ProgramController extends AbstractController
             );
         }
 
-        return $this->render('program/episode_show.html.twig', ['program' => $program, 'season' => $season, 'episode' => $episode]);
+        //return user Object
+        $user = $this->getUser();
+
+        $comment = new Comment();
+       
+        $form = $this->createForm(CommentType::class, $comment);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {        
+
+            $comment->setAuthor($user); // relier commentaire à un user
+            $comment->setEpisode($episode); // relier commentaire à un episode
+            $commentRepository->save($comment, true);
+            $this->addFlash('success', 'The comment has been added! :)');
+
+            return $this->redirectToRoute('app_episode_index', [], Response::HTTP_SEE_OTHER); //Hacer, ir a la serie con el comentario
+        }      
+
+        return $this->render('program/episode_show.html.twig', ['program' => $program, 'season' => $season, 'episode' => $episode, 'form' => $form]);
     }
 }

@@ -17,6 +17,28 @@
 		</div>
 	</div>
 
+	{% if app.user %}
+		<h3>Rajouter un commentaire</h3>
+		{{ form_start(form) }}
+		{{ form_widget(form) }}
+		<button class="btn">{{ button_label|default('Add comment') }}</button>
+		{{ form_end(form) }}
+	{% endif %}
+
+	<strong>Comments :</strong>
+	<ul>
+		{% for comment in episode.comments %}
+			<li>
+				<p>Author:
+					{{ comment.author.email }}</p>
+				<p>Comment:
+					{{ comment.comment }}</p>
+				<p>Rate:
+					{{ comment.rate }}</p>
+			</li>
+		{% endfor %}
+	</ul>
+
 	<a href="{{ path('program_index') }}">Retour à la liste des séries</a>
 	<br>
 	<a href="{{ path('category_index') }}">Retour à la liste de categories</a>
