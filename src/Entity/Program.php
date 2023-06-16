@@ -9,9 +9,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 // use Webmozart\Assert\Assert;
 use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
-// use Symfony\Component\Validator\Mapping\ClassMetadata;
- 
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity; 
 
 
 #[ORM\Entity(repositoryClass: ProgramRepository::class)]
@@ -62,6 +60,9 @@ class Program
 
     #[ORM\Column(length: 255)]
     private ?string $slug = null;
+
+    #[ORM\ManyToOne(inversedBy: 'programs')]
+    private ?User $owner = null;
 
     public function __construct()
     {
@@ -211,6 +212,18 @@ class Program
     public function setSlug(string $slug): self
     {
         $this->slug = $slug;
+
+        return $this;
+    }
+
+    public function getOwner(): ?User
+    {
+        return $this->owner;
+    }
+
+    public function setOwner(?User $owner): self
+    {
+        $this->owner = $owner;
 
         return $this;
     }

@@ -79,7 +79,6 @@ class EpisodeController extends AbstractController
         return $this->render('episode/show.html.twig', ['episode' => $episode,]);
     }
 
-    // #[Route('/{id}/edit', name: 'app_episode_edit', methods: ['GET', 'POST'])]
     #[Route('/{slug_episode}/edit', name: 'app_episode_edit', methods: ['GET', 'POST'])]
     #[ParamConverter('episode', options: ['mapping' => ['slug_episode' => 'slug']])]
     public function edit(Request $request, Episode $episode, EpisodeRepository $episodeRepository, SluggerInterface $slugger): Response

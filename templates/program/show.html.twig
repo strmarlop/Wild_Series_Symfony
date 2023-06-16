@@ -9,6 +9,13 @@
 		<div class="media-body">
 			<h1 class="mt-0">Série
 				{{ program.title }}</h1>
+
+			{% if is_granted("ROLE_ADMIN") or is_granted("ROLE_CONTRIBUTOR") %}
+				<a href="{{ path('program_edit', { slug_program: program.slug }) }}">Edit Serie</a>
+			{% endif %}
+
+			<br>
+			<br>
 			<p>{{ program.synopsis }}</p>
 			<p>Catégorie :{{ program.category.name }}</p>
 			{# Affichage de la liste de saison par rapport à la série #}

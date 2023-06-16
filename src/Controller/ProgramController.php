@@ -23,6 +23,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\String\Slugger\SluggerInterface;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 use function Symfony\Component\DependencyInjection\Loader\Configurator\expr;
 
@@ -63,7 +64,9 @@ class ProgramController extends AbstractController
             $slug = $slugger->slug($program->getTitle()); //en parametre la chaîne de caractère à sluggifier
             $program->setSlug($slug);
 
-            // Deal with the submitted data
+            $program->setOwner($this->getUser()); //asigno el propietario de la creacion de serie
+
+            // Deal with the submitted data            
             $programRepository->save($program, true);
 
             $email = (new Email())
@@ -87,16 +90,11 @@ class ProgramController extends AbstractController
         return $this->render('program/new.html.twig', ['form' => $form,]);
     }
 
-
-    // #[Route('/show/{id<^[0-9]+$>}', name: 'show')]
-    // public function show(Program $program, ProgramDuration $programDuration): Response //param converter
-
     #[Route('/show/{slug_program}', name: 'show')] //SluggerInterface $slugger no hace falta porque ya lo tienes dentro de programa
     // #[Entity('program',
     #[ParamConverter('program', options: ['mapping' => ['slug_program' => 'slug']])] // guardado en favoritos en navegador chrome
     public function show(Program $program, ProgramDuration $programDuration): Response //param converter
     {
-
         if (!$program) {
             throw $this->createNotFoundException(
                 'No program with id : ' . $program->getId() . ' found in program\'s table.' //aqui era la id
@@ -119,7 +117,7 @@ class ProgramController extends AbstractController
         return $this->render('program/season_show.html.twig', ['program' => $program, 'season' => $season,]);
     }
 
-    #[Route('/{slug_program}/season/{season}/episode/{slug_episode}', name: 'episode_show')]
+    #[Route('/{slug_program}/season/{season}/episode/{slug_episode}', name: 'episode_show', methods: ['GET', 'POST'])]
     #[ParamConverter('program', options: ['mapping' => ['slug_program' => 'slug']])] // guardado en favoritos en navegador chrome
     #[ParamConverter('episode', options: ['mapping' => ['slug_episode' => 'slug']])] // guardado en favoritos en navegador chrome
     public function showEpisode(CommentRepository $commentRepository, Request $request, Program $program, Season $season, Episode $episode): Response
@@ -139,15 +137,53 @@ class ProgramController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {        
-
             $comment->setAuthor($user); // relier commentaire à un user
             $comment->setEpisode($episode); // relier commentaire à un episode
             $commentRepository->save($comment, true);
             $this->addFlash('success', 'The comment has been added! :)');
 
-            return $this->redirectToRoute('app_episode_index', [], Response::HTTP_SEE_OTHER); //Hacer, ir a la serie con el comentario
+            return $this->redirectToRoute('program_episode_show', ['slug_program' => $program->getSlug(), 'season' => $season->getId(), 'slug_episode' => $episode->getSlug()], Response::HTTP_SEE_OTHER); //Hacer, ir a la serie con el comentario
         }      
 
         return $this->render('program/episode_show.html.twig', ['program' => $program, 'season' => $season, 'episode' => $episode, 'form' => $form]);
     }
+
+    #[Route('/edit/{slug_program}', name: 'edit', methods: ['GET', 'POST'])]
+    #[ParamConverter('program', options: ['mapping' => ['slug_program' => 'slug']])]
+    public function edit(Request $request, Program $program, ProgramRepository $programRepository, SluggerInterface $slugger): Response
+    {
+        // Check wether the logged in user is the owner of the program
+        if ($this->getUser() !== $program->getOwner()) {
+            // If not the owner, throws a 403 Access Denied exception
+            throw $this->createAccessDeniedException('Only the owner can edit the program!');
+        }
+          
+        
+        $form = $this->createForm(ProgramType::class, $program);
+        // Get data from HTTP request
+        $form->handleRequest($request);
+        // Was the form submitted ?
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            $slug = $slugger->slug($program->getTitle()); //en parametre la chaîne de caractère à sluggifier
+            $program->setSlug($slug);
+
+            $program->setOwner($this->getUser()); //asigno el propietario de la creacion de serie
+            // Deal with the submitted data            
+            $programRepository->save($program, true);
+    
+            // Once the form is submitted, valid and the data inserted in database, you can define the success flash message
+            //Y antes de ser redirigido al index
+            $this->addFlash('success', 'The new program has been edited! :)'); //message in base.html.twig, para que sea global
+
+            // Redirect to categories list
+            return $this->redirectToRoute('program_index');
+        }
+
+        return $this->render('program/edit.html.twig', ['program' => $program, 'form' => $form]);
+    }
+
+    
+    
+
 }

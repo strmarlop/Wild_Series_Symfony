@@ -17,13 +17,15 @@
 		</div>
 	</div>
 
-	{% if app.user %}
+	{# {% if app.user %} #}
+	{% if is_granted("ROLE_ADMIN") or is_granted("ROLE_CONTRIBUTOR") %}
 		<h3>Rajouter un commentaire</h3>
 		{{ form_start(form) }}
 		{{ form_widget(form) }}
 		<button class="btn">{{ button_label|default('Add comment') }}</button>
 		{{ form_end(form) }}
 	{% endif %}
+
 
 	<strong>Comments :</strong>
 	<ul>
@@ -36,10 +38,15 @@
 				<p>Rate:
 					{{ comment.rate }}</p>
 			</li>
+			{% if is_granted("ROLE_ADMIN") or app.user == comment.author %}
+				{{ include('comment/_delete_form.html.twig') }}
+			{% endif %}
+			<br>
 		{% endfor %}
 	</ul>
 
 	<a href="{{ path('program_index') }}">Retour à la liste des séries</a>
 	<br>
 	<a href="{{ path('category_index') }}">Retour à la liste de categories</a>
+
 {% endblock %}
