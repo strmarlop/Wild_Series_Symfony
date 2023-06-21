@@ -22,11 +22,11 @@ class CategoryController extends AbstractController
     }
 
     #[Route('/{categoryName}', name: 'show')]
-
     public function show(string $categoryName, CategoryRepository $categoryRepository, ProgramRepository $programRepository)
     {
         $category = $categoryRepository->findOneByName($categoryName); //prends le champ Name // $category = $categoryRepository->findOneBy(['name' => $categoryName]);
-        if (!$category) {
+        if (!$category) 
+        {
             throw $this->createNotFoundException(
                 '404 - No category with name : ' . $categoryName . ' found in category\'s table.'
             );
