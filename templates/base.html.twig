@@ -17,22 +17,22 @@
 			{{ encore_entry_script_tags('app') }}
 		{% endblock %}
 	</head>
-	<body data-controller="hello">...</body>
-	{# <body> #}
-	<header>
-		{% include '_navbar.html.twig' %}
-	</header>
+	<body>
+		<header>
+			{% include '_navbar.html.twig' %}
+		</header>
 
-	{% for category, messages in app.flashes %}
-		{% for message in messages %}
-			<div class="alert alert-{{ category }}">
-				{{ message }}
-			</div>
+		{% for category, messages in app.flashes %}
+			{% for message in messages %}
+				<div class="alert alert-{{ category }}">
+					{{ message }}
+				</div>
+			{% endfor %}
 		{% endfor %}
-	{% endfor %}
 
-	{% block body %}
+		{% block body %}
 
-		{# flash message aquí global #}
-	{% endblock %}
-</html></body></html>
+			{# flash message aquí global #}
+		{% endblock %}
+	</body>
+</html>
