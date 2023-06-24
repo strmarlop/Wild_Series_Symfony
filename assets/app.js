@@ -6,7 +6,7 @@
  */
 
 // any CSS you import will output into a single css file (app.css in this case)
-import "bootswatch/dist/minty/bootstrap.min.css";
+// import "bootswatch/dist/minty/bootstrap.min.css";
 import './styles/app.scss';
 
 // start the Stimulus application
