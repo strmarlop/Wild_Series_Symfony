@@ -1,0 +1,20 @@
+<div{{attributes}}>
+	<!-- component html -->
+	<aside>
+
+
+		{% for episode in this.episodes %}
+
+			{# {{ dump(episode) }} #}
+			<div class="card" style="width: 18rem;">
+				<div class="card-body">
+					<h5 class="card-title">Episode #{{ episode.number }}:
+						{{ episode.title }}</h5>
+					<p class="card-text">Season #{{ episode.season.number }}</p>
+					<p class="card-text">Program:
+						{{ episode.season.program.title }}</p>
+				</div>
+			</div>
+		{% endfor %}
+	</aside>
+</div>

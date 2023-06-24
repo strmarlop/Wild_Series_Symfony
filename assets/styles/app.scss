@@ -32,3 +32,8 @@ nav div.container-fluid div.navbar-header a.navbar-brand {
     color: $secondary-color;
     margin-left: .5em;
 }
+
+body div aside {
+    display: flex;
+    justify-content: space-around;
+}

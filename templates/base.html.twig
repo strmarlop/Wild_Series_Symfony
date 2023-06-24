@@ -30,7 +30,9 @@
 				<div class="alert alert-{{ category }}">{{ message }}</div>
 			{% endfor %}
 		{% endfor %}
+
 		<div id="swup"> {% block body %}{% endblock %}
 			</div>
 		</body>
+		{{ component('last_episode') }}
 	</html>
