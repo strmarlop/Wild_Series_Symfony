@@ -13,15 +13,12 @@
 		{# navbar avec deconnexion user#}
 		{% if app.user %}
 			{{ app.user.email }}
-			<a href="{{ path('security_profile') }}">
-				Mon profil</a>
-			<a href="{{ path('app_logout') }}">
-				Se déconnecter</a>
+			<a href="{{ path('security_profile') }}">Mon profil</a>
+			<a href="{{ path('app_logout') }}">Se déconnecter</a>
 		{% else %}
-			<a href="{{ path('security_register') }}">
-				Se registrer</a>
-			<a href="{{ path('app_login') }}">
-				Se connecter</a>
+			<a href="{{ path('security_register') }}">Se registrer</a>
+			<a href="{{ path('app_login') }}">Se connecter</a>
 		{% endif %}
+		{{ component('navbar') }}
 	</div>
 </nav>

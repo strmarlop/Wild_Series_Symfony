@@ -1,15 +1,13 @@
+@import "~bootswatch/dist/minty/variables";
+@import "~bootstrap/scss/bootstrap";
+@import "~bootswatch/dist/minty/bootswatch";
+
 // primary et secondary colors - Boostrap
 $nav-color: #006857;
 $primary-color: #000000;
 $secondary-color: #FFCB00;
 $tertiary-color: #ffffff;
 $background-color: #EDEDED;
-
-
-
-
-@import "~bootstrap/scss/bootstrap";
-
 
 * {
     margin: 0;
