@@ -10,6 +10,7 @@ use App\Entity\Actor;
 use App\Entity\Comment;
 use App\Form\CommentType;
 use App\Form\ProgramType;
+use App\Form\SearchProgramType;
 use App\Repository\CommentRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -20,6 +21,7 @@ use App\Repository\ProgramRepository;
 use App\Repository\SeasonRepository;
 use Doctrine\ORM\Mapping\Entity;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use Symfony\Component\Form\Extension\Core\Type\SearchType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\String\Slugger\SluggerInterface;
@@ -33,19 +35,22 @@ use function Symfony\Component\DependencyInjection\Loader\Configurator\expr;
 class ProgramController extends AbstractController
 {
     #[Route('/', name: 'index')]
-    public function index(RequestStack $requestStack, ProgramRepository $programRepository): Response
+    public function index(Request $request, ProgramRepository $programRepository): Response
     {
-        $programs = $programRepository->findAll();
+        $form = $this->createForm(SearchProgramType::class);
+        $form->handleRequest($request);
 
-        //session
-        $session = $requestStack->getSession();
-        if (!$session->has('total')) {  //check if key total exists
-            $session->set('total', 0); // if total doesn’t exist in session, it is initialized.
+        if ($form->isSubmitted() && $form->isValid()) {
+            $search = $form->getData()['search'];
+            $programs = $programRepository->findLikeName($search);
+        } else {
+            $programs = $programRepository->findAll();
         }
-        $total = $session->get('total'); // get actual value in session with ‘total' key.
-        //pas besoin d'envoyer $total parce que Twig a accès à Session
 
-        return $this->render('program/index.html.twig', ['programs' => $programs]);
+        return $this->render('program/index.html.twig', [
+            'programs' => $programs,
+            'form' => $form,
+        ]);
     }
 
     #[Route('/new', name: 'new')]
