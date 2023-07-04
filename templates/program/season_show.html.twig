@@ -15,7 +15,8 @@
 				{{ season.number }}
 				de
 				{{ program.title }}</h1>
-			<img src="{{ vich_uploader_asset(program) }}" alt="{{ program.title }}">
+				{# VERIFIER LA TAILLE DE l'IMAGE #}
+			<img src="{{ vich_uploader_asset(program) }}" alt="{{ program.title }}"> 
 
 			<p>{{ season.description }}</p>
 			<p>Liste d'épisodes</p>
