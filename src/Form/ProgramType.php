@@ -26,6 +26,12 @@ class ProgramType extends AbstractType
                 'download_uri'  => true, // not mandatory, default is true
             ])
             ->add('country', TextType::class)
+            // ->add('countryFile', VichFileType::class, [
+            //     'required'      => false,
+            //     'allow_delete'  => true, // not mandatory, default is true
+            //     'download_uri'  => true, // not mandatory, default is true
+            // ])            
+
             ->add('year')
             ->add('category', EntityType::class, ['class' => Category::class, 'choice_label' => 'name'])  // menu deroulant prérempli, des categories
             ->add('actors', EntityType::class, ['class' => Actor::class, 'choice_label' => 'name', 'multiple' => true,'expanded' => true, 'by_reference' => false]);

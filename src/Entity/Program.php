@@ -50,7 +50,7 @@ class Program
 
     #[Vich\UploadableField(mapping: 'poster_file', fileNameProperty: 'poster')]
     #[Assert\File(
-        maxSize:'1M',
+        maxSize:'2M',
         mimeTypes:['image/jpeg', 'image/png', 'image/webp'],
     )]
     private ?File $posterFile = null;
@@ -64,6 +64,16 @@ class Program
 
     #[ORM\Column(length: 255)]
     private ?string $country = null;
+
+
+    // #[Vich\UploadableField(mapping: 'picture_actor', fileNameProperty: 'country')]
+    // #[Assert\File(
+    //     maxSize:'1M',
+    //     mimeTypes:['country/jpg', 'country/png', 'country/webp'],
+    // )]
+    // private ?File $countryFile = null;
+
+
 
     #[ORM\Column]
     private ?int $year = null;
@@ -255,5 +265,24 @@ class Program
     {
         return $this->updatedAt;
     }
+
+
+
+
+    
+    // public function setCountryFile(File $country = null): Program
+    // {
+    //     $this->countryFile = $country;
+    //     if ($country) {
+    //         $this->updatedAt = new DateTime('now');
+    //     }
+
+    //     return $this;
+    // }
+
+    // public function getCountryFile(): ?File
+    // {
+    //     return $this->countryFile;
+    // }
 
 }
