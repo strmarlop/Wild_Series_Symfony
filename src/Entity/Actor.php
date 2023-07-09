@@ -6,8 +6,12 @@ use App\Repository\ActorRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
+use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\Validator\Constraints\Image;
 
 #[ORM\Entity(repositoryClass: ActorRepository::class)]
+#[Vich\Uploadable]
 class Actor
 {
     #[ORM\Id]
@@ -20,6 +24,15 @@ class Actor
 
     #[ORM\ManyToMany(targetEntity: Program::class, inversedBy: 'actors')]
     private Collection $programs;
+
+    #[ORM\Column(length: 255, nullable:true)]
+    private ?string $image = null;
+
+    #[Vich\UploadableField(mapping: 'picture_actor', fileNameProperty: 'image')]
+     private ?File $imageFile = null;
+
+     #[ORM\Column(nullable: true)]
+    private ?\DateTimeImmutable $updatedAt = null;
 
     public function __construct()
     {
@@ -43,6 +56,22 @@ class Actor
         return $this;
     }
 
+    public function setimageFile(?File $imageFile = null): void
+    {
+        $this->imageFile = $imageFile;
+        if (null !== $imageFile) {
+            // It is required that at least one field changes if you are using doctrine
+            // otherwise the event listeners won't be called and the file is lost
+            $this->updatedAt = new \DateTimeImmutable();
+        }
+        // return $this;
+    }
+
+    public function getimageFile(): ?File
+    {
+        return $this->imageFile;
+    }
+
     /**
      * @return Collection<int, Program>
      */
@@ -63,6 +92,18 @@ class Actor
     public function removeProgram(Program $program): self
     {
         $this->programs->removeElement($program);
+
+        return $this;
+    }
+
+    public function getImage(): ?string
+    {
+        return $this->image;
+    }
+
+    public function setImage(?string $image): self
+    {
+        $this->image = $image;
 
         return $this;
     }

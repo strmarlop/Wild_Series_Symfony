@@ -1,0 +1,9 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+	{{ form_start(form) }}
+	{# 'form' es lo pasado por render #}
+	{{ form_widget(form) }}
+	<button type="submit">Editer un/e acteur/actrice</button>
+	{{ form_end(form) }}
+{% endblock %}

@@ -10,8 +10,9 @@
 		<div class="media-body">
 
 			<h1 class="mt-0">Série
-				{{ program.title }}</h1>
-			<img src="{{ vich_uploader_asset(program) }}" alt="{{ program.title }}">
+				{{ program.title }}
+			</h1>
+			<img class="uploaded-pic" src="{{ vich_uploader_asset(program) }}" alt="{{ program.title }}">
 
 			<p>{{ program.synopsis }}</p>
 			<p>Catégorie :{{ program.category.name }}</p>
@@ -35,6 +36,7 @@
 		{% for actor in program.actors %}
 			<li>
 				<a href="{{ path("actor_show", { id: actor.id }) }}">{{ actor.name }}</a>
+				<img class="uploaded-pic" src="{{ vich_uploader_asset(actor) }}" alt="picture-{{ actor.name }}">
 			</li>
 		{% else %}
 			<li>Aucun acteur pour cette série</li>

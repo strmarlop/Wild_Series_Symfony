@@ -6,18 +6,25 @@
 
 {% block body %}
 	<div class="media">
-		<img class="align-self-start mr-3" src="{{ actor.name }}" alt="{{ actor.name }}">
+
+
+		<img class="uploaded-pic" src="{{ vich_uploader_asset(actor) }}" alt="picture-{{ actor.name }}">
+		{# <img class="align-self-start mr-3" src="{{ actor.name }}" alt="{{ actor.name }}"> #}
 		<div class="media-body">
-			<h1 class="mt-0">{{ actor.name }}</h1>
+			
+			<h1 class="mt-0">{{ actor.name }}  
+			</h1>
+			<a href="{{ path('actor_edit', {id: actor.id}) }}">Editer actor</a>
+			
 
 			<h3>Liste de séries asscociées à
-				{{ actor.name }}</h3>
-
+				{{ actor.name }}
+			</h3>
 
 			<ul>
 				{% for program in actor.programs %}
 					<li>
-						<a href="{{ path("program_show", { id: program.id }) }}">
+						<a href="{{ path("program_show", { slug_program: program.slug }) }}">
 							<p>{{ program.title }}</p>
 						</a>
 					</li>
